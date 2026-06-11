@@ -12,7 +12,7 @@ func TestTokenize(t *testing.T) {
 		want  []string
 	}{
 		{
-			name:  "deve corretamente",
+			name:  "deve tokenizar corretamente",
 			input: "Pois é, meu rei, markov chain em GO!!!123##$",
 			want:  []string{"pois", "é", "meu", "rei", "markov", "chain", "em", "go"},
 		},
