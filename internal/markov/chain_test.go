@@ -2,6 +2,7 @@ package markov
 
 import (
 	"reflect"
+	"slices"
 	"testing"
 )
 
@@ -61,6 +62,35 @@ func TestNextWord(t *testing.T) {
 			result := chain.NextWord(testcase.next)
 			if result != testcase.want {
 				t.Fatalf("NextWord(%v) result = %#v, want = %#v", testcase.next, result, testcase.want)
+			}
+		})
+	}
+}
+
+func TestNextWordAtRandom(t *testing.T) {
+	testcases := []struct {
+		name  string
+		input []string
+		next  string
+		want  []string
+	}{
+		{
+			name:  "deve retornar uma das opcoes válidas",
+			input: []string{"o", "rei", "olhou", "o", "espelho"},
+			next:  "o",
+			want:  []string{"rei", "espelho"},
+		},
+	}
+
+	for _, testcase := range testcases {
+		t.Run(testcase.name, func(t *testing.T) {
+			chain := NewChain()
+			chain.Train(testcase.input)
+
+			result := chain.NextWordAtRandom(testcase.next)
+
+			if !slices.Contains(testcase.want, result) {
+				t.Fatalf("NextWordAtRandom() result = %#v, want = %#v", result, testcase.want)
 			}
 		})
 	}
