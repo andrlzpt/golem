@@ -27,7 +27,7 @@ func TestGenerate(t *testing.T) {
 			chain := NewChain()
 			chain.Train(testcase.input)
 
-			result := Generate(chain, testcase.word, testcase.maxNumberOfWords)
+			result := GenerateNextDumb(chain, testcase.word, testcase.maxNumberOfWords)
 
 			if !reflect.DeepEqual(result, testcase.want) {
 				t.Fatalf("Generate() result = %#v, want %#v", result, testcase.want)

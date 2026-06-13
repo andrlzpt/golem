@@ -21,7 +21,7 @@ func (c *Chain) Train(tokens []string) {
 	}
 }
 
-func (c *Chain) NextWord(word string) string {
+func (c *Chain) NextWordAlwaysFirstOption(word string) string {
 	options := c.Next[word]
 
 	if len(options) == 0 {

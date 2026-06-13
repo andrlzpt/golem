@@ -59,7 +59,7 @@ func TestNextWord(t *testing.T) {
 			chain := NewChain()
 			chain.Train(testcase.input)
 
-			result := chain.NextWord(testcase.next)
+			result := chain.NextWordAlwaysFirstOption(testcase.next)
 			if result != testcase.want {
 				t.Fatalf("NextWord(%v) result = %#v, want = %#v", testcase.next, result, testcase.want)
 			}
