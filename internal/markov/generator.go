@@ -2,11 +2,11 @@ package markov
 
 type next func(string) string
 
-func GenerateNextDumb(chain *Chain, word string, maxNumberOfWords int) []string {
+func GenerateNextDumb(chain Chain, word string, maxNumberOfWords int) []string {
 	return generateWith(word, maxNumberOfWords, chain.NextWordAlwaysFirstOption)
 }
 
-func GenerateNextAtRandom(chain *Chain, word string, maxNumberOfWords int) []string {
+func GenerateNextAtRandom(chain Chain, word string, maxNumberOfWords int) []string {
 	return generateWith(word, maxNumberOfWords, chain.NextWordAtRandom)
 }
 

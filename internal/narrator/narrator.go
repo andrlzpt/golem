@@ -9,13 +9,13 @@ import (
 )
 
 type Narrator struct {
-	chain *markov.Chain
+	chain markov.Chain
 	store *memory.Store
 }
 
 func NewNarrator() *Narrator {
 	return &Narrator{
-		chain: markov.NewChain(),
+		chain: markov.NewUnigramChain(),
 		store: memory.NewStore(),
 	}
 }

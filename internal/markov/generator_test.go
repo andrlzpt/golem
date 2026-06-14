@@ -24,7 +24,7 @@ func TestGenerate(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			chain := NewChain()
+			chain := NewUnigramChain()
 			chain.Train(testcase.input)
 
 			result := GenerateNextDumb(chain, testcase.word, testcase.maxNumberOfWords)
