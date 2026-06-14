@@ -1,6 +1,16 @@
 package markov
 
-func Generate(chain *Chain, word string, maxNumberOfWords int) []string {
+type next func(string) string
+
+func GenerateNextDumb(chain *Chain, word string, maxNumberOfWords int) []string {
+	return generateWith(word, maxNumberOfWords, chain.NextWordAlwaysFirstOption)
+}
+
+func GenerateNextAtRandom(chain *Chain, word string, maxNumberOfWords int) []string {
+	return generateWith(word, maxNumberOfWords, chain.NextWordAtRandom)
+}
+
+func generateWith(word string, maxNumberOfWords int, n next) []string {
 	result := []string{}
 	current := word
 	for range maxNumberOfWords {
@@ -9,7 +19,7 @@ func Generate(chain *Chain, word string, maxNumberOfWords int) []string {
 		}
 
 		result = append(result, current)
-		current = chain.NextWord(current)
+		current = n(current)
 	}
 	return result
 }

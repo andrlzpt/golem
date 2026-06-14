@@ -39,7 +39,7 @@ func TestSpeak(t *testing.T) {
 		t.Run(testcase.name, func(t *testing.T) {
 			narrator := NewNarrator()
 			narrator.Train(testcase.input)
-			result := narrator.Speak(testcase.start, testcase.maxNumberOfWords)
+			result := narrator.DumbSpeak(testcase.start, testcase.maxNumberOfWords)
 
 			if result != testcase.want {
 				t.Fatalf("Speak(%v, %d) result = %#v, want = %#v", testcase.start, testcase.maxNumberOfWords, result, testcase.want)

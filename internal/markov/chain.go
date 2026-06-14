@@ -1,5 +1,7 @@
 package markov
 
+import "math/rand"
+
 type Chain struct {
 	Next map[string][]string
 }
@@ -19,7 +21,7 @@ func (c *Chain) Train(tokens []string) {
 	}
 }
 
-func (c *Chain) NextWord(word string) string {
+func (c *Chain) NextWordAlwaysFirstOption(word string) string {
 	options := c.Next[word]
 
 	if len(options) == 0 {
@@ -27,4 +29,14 @@ func (c *Chain) NextWord(word string) string {
 	}
 
 	return options[0]
+}
+
+func (c *Chain) NextWordAtRandom(word string) string {
+	options := c.Next[word]
+
+	if len(options) == 0 {
+		return ""
+	}
+
+	return options[rand.Intn(len(options))]
 }
