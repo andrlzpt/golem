@@ -40,3 +40,7 @@ func (c *Chain) NextWordAtRandom(word string) string {
 
 	return options[rand.Intn(len(options))]
 }
+
+func (c *Chain) Clear() {
+	c.Next = make(map[string][]string)
+}

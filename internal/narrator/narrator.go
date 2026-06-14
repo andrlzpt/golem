@@ -50,6 +50,11 @@ func (n *Narrator) TellAll() string {
 	return strings.Join(n.store.View(), " ")
 }
 
+func (n *Narrator) ForgetAll() {
+	n.store.Clear()
+	n.chain.Clear()
+}
+
 func processTokensIntoString(input string, tokens []string) string {
 	response := strings.Join(tokens, " ")
 	if response == input {
