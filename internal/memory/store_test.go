@@ -22,9 +22,9 @@ func TestView(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			memory := NewMemory()
+			memory := NewStore()
 			tokens := text.Tokenize(testcase.input)
-			memory.Remember(tokens)
+			memory.Store(tokens)
 
 			result := memory.View()
 

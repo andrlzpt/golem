@@ -1,20 +1,20 @@
 package memory
 
-type Memory struct {
+type Store struct {
 	tokens []string
 }
 
-func NewMemory() *Memory {
-	return &Memory{
+func NewStore() *Store {
+	return &Store{
 		tokens: []string{},
 	}
 }
 
-func (m *Memory) Remember(t []string) {
+func (m *Store) Store(t []string) {
 	m.tokens = append(m.tokens, t...)
 }
 
-func (m *Memory) View() []string {
+func (m *Store) View() []string {
 	dst := make([]string, len(m.tokens))
 	copy(dst, m.tokens)
 	return dst
