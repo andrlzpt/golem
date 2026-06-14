@@ -74,3 +74,32 @@ func TestTellAll(t *testing.T) {
 		})
 	}
 }
+
+func TestFromMemorySpeak(t *testing.T) {
+	testcases := []struct {
+		name         string
+		trainingText string
+		input        string
+		want         string
+	}{
+		{
+			name:         "deve escolher último item da memória como start next",
+			trainingText: "o rio lembrou-se do rei ",
+			input:        "Eu olhei o rio",
+			want:         "rio lembrou-se do rei",
+		},
+	}
+
+	for _, testcase := range testcases {
+		t.Run(testcase.name, func(t *testing.T) {
+			narrator := NewNarrator()
+			narrator.Train(testcase.trainingText)
+			narrator.Hear(testcase.input)
+			result := narrator.FromMemorySpeak(4)
+			if result != testcase.want {
+				t.Fatalf("FromMemorySpeak(4) result = %#v, want = %#v", result, testcase.want)
+			}
+
+		})
+	}
+}
