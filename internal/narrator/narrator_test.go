@@ -48,3 +48,29 @@ func TestSpeak(t *testing.T) {
 	}
 
 }
+
+func TestTellAll(t *testing.T) {
+	testcases := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name:  "deve lembrar e contar memória corretamente",
+			input: "lembre disso",
+			want:  "lembre disso",
+		},
+	}
+
+	for _, testcase := range testcases {
+		t.Run(testcase.name, func(t *testing.T) {
+			narrator := NewNarrator()
+			narrator.Hear(testcase.input)
+			result := narrator.TellAll()
+
+			if result != testcase.want {
+				t.Fatalf("TellAll() result = %#v, want = %#v", result, testcase.want)
+			}
+		})
+	}
+}

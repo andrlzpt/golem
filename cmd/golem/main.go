@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
 	"github.com/andrlzpt/golem/internal/narrator"
 )
@@ -23,4 +25,12 @@ func main() {
 	fmt.Printf("Result: %q\n", sentence)
 	fmt.Println("OBS: this is at random, but there is a weighted frequency selection component")
 	fmt.Println("------------------------------------")
+	fmt.Println("---LISTENS TO INPUT SPEAK --------------------")
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter text: ")
+	input, _ := reader.ReadString('\n')
+	narrator.Hear(input)
+	sentence = narrator.TellAll()
+	fmt.Printf("Memory: %q\n", sentence)
+
 }

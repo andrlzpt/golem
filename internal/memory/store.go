@@ -19,3 +19,7 @@ func (m *Store) View() []string {
 	copy(dst, m.tokens)
 	return dst
 }
+
+func (m *Store) Last() string {
+	return m.tokens[len(m.tokens)-1]
+}
