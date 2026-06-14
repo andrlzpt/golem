@@ -10,10 +10,17 @@ func main() {
 	narrator := narrator.NewNarrator()
 
 	trainingText := "O rei olhou o espelho embaixo do rio e o espelho lembrou-se do espelho"
-	narrator.Train(trainingText)
-
-	sentence := narrator.Speak("o", 8)
-
 	fmt.Printf("Training text: %q\n", trainingText)
-	fmt.Printf("Golem says: %q\n", sentence)
+
+	narrator.Train(trainingText)
+	fmt.Println("------------------------------------")
+	fmt.Println("---DUMB SPEAK (ALWAYS FIRST NEXT)---")
+	sentence := narrator.DumbSpeak("o", 8)
+	fmt.Printf("Result: %q\n", sentence)
+	fmt.Println("------------------------------------")
+	fmt.Println("---RANDOM SPEAK --------------------")
+	sentence = narrator.RandomSpeak("o", 8)
+	fmt.Printf("Result: %q\n", sentence)
+	fmt.Println("OBS: this is at random, but there is a weighted frequency selection component")
+	fmt.Println("------------------------------------")
 }
