@@ -67,7 +67,7 @@ func TestNextWord(t *testing.T) {
 	}
 }
 
-func TestNextWordAtRandom(t *testing.T) {
+func TestUnigramNextWordAtRandom(t *testing.T) {
 	testcases := []struct {
 		name  string
 		input []string
