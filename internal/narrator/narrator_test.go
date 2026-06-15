@@ -2,6 +2,8 @@ package narrator
 
 import (
 	"testing"
+
+	"github.com/andrlzpt/golem/internal/markov"
 )
 
 func TestSpeak(t *testing.T) {
@@ -37,7 +39,7 @@ func TestSpeak(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			narrator := NewNarrator()
+			narrator := NewNarrator(markov.NewUnigramChain())
 			narrator.Train(testcase.input)
 			result := narrator.DumbSpeak(testcase.start, testcase.maxNumberOfWords)
 
@@ -64,7 +66,7 @@ func TestTellAll(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			narrator := NewNarrator()
+			narrator := NewNarrator(markov.NewUnigramChain())
 			narrator.Hear(testcase.input)
 			result := narrator.TellAll()
 
@@ -92,10 +94,10 @@ func TestFromMemorySpeak(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			narrator := NewNarrator()
+			narrator := NewNarrator(markov.NewUnigramChain())
 			narrator.Train(testcase.trainingText)
 			narrator.Hear(testcase.input)
-			result := narrator.FromMemorySpeak(4)
+			result := narrator.FromUnigramSpeakFromMemory(4)
 			if result != testcase.want {
 				t.Fatalf("FromMemorySpeak(4) result = %#v, want = %#v", result, testcase.want)
 			}
