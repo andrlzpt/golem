@@ -58,7 +58,7 @@ func TestBigramGenerate(t *testing.T) {
 			chain := NewBigramChain()
 			chain.Train(testcase.input)
 
-			result := GenerateNextAtRandom(chain, testcase.word, testcase.maxNumberOfWords)
+			result := Generate(chain, testcase.word, testcase.maxNumberOfWords)
 
 			if !reflect.DeepEqual(result, testcase.want) {
 				t.Fatalf("Generate() result = %#v, want %#v", result, testcase.want)

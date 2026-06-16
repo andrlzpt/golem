@@ -20,14 +20,6 @@ func (m *Store) View() []string {
 	return dst
 }
 
-func (m *Store) Last() string {
-	return m.tokens[len(m.tokens)-1]
-}
-
-func (m *Store) LastTwo() string {
-	return m.tokens[len(m.tokens)-2] + " " + m.tokens[len(m.tokens)-1]
-}
-
 func (m *Store) Clear() {
 	m.tokens = nil
 }

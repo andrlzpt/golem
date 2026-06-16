@@ -27,24 +27,18 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("---UNIGRAM CHAIN: --------")
-
-	unigramNarrator := narrator.NewNarrator(markov.NewUnigramChain())
-
+	unigramChain := markov.NewChain(1)
+	unigramNarrator := narrator.NewNarrator(unigramChain)
 	unigramNarrator.Train(zaratustra)
-
 	unigramNarrator.Hear(readInput(reader))
-
-	fmt.Printf("GOLEM SAYS: %v\n", unigramNarrator.FromUnigramSpeakFromMemory(60))
+	fmt.Printf("GOLEM SAYS: %q\n", unigramNarrator.Speak(60))
 
 	fmt.Println("---BIGRAM CHAIN: --------")
-
-	bigramNarrator := narrator.NewNarrator(markov.NewBigramChain())
-
+	bigramChain := markov.NewChain(2)
+	bigramNarrator := narrator.NewNarrator(bigramChain)
 	bigramNarrator.Train(zaratustra)
-
 	bigramNarrator.Hear(readInput(reader))
-
-	fmt.Printf("GOLEM SAYS: %q\n", bigramNarrator.FromBigramSpeakFromMemory(60))
+	fmt.Printf("GOLEM SAYS: %q\n", bigramNarrator.Speak(60))
 
 }
 

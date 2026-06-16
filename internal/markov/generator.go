@@ -2,63 +2,26 @@ package markov
 
 import "strings"
 
-type next func(string) string
-
-func GenerateNextDumb(chain Chain, word string, maxNumberOfWords int) []string {
-	return generateWith(word, maxNumberOfWords, chain.NextWordAlwaysFirstOption)
-}
-
-func GenerateNextAtRandom(chain Chain, word string, maxNumberOfWords int) []string {
-	return generateWith(word, maxNumberOfWords, chain.NextWordAtRandom)
-}
-
-func generateWith(input string, maxNumberOfWords int, n next) []string {
-	fields := strings.Fields(input)
-
-	if len(fields) == 1 {
-		return unigramGenerate(input, maxNumberOfWords, n)
+func Generate(chain *Chain, tokens []string, maxNumberOfWords int) []string {
+	if len(tokens) != chain.Order {
+		return []string{}
 	}
 
-	if len(fields) == 2 {
-		return bigramGenerate(input, maxNumberOfWords, n)
-	}
-
-	return []string{}
-}
-
-func unigramGenerate(input string, maxNumberOfWords int, n next) []string {
-	result := []string{}
-	current := input
-	for range maxNumberOfWords {
-		if current == "" {
-			return result
-		}
-
-		result = append(result, current)
-		current = n(current)
-	}
-	return result
-}
-
-func bigramGenerate(input string, maxNumberOfWords int, n next) []string {
-	parts := strings.Fields(input)
-	result := []string{parts[0], parts[1]}
-
-	first := parts[0]
-	second := parts[1]
+	result := make([]string, len(tokens))
+	copy(result, tokens)
+	window := make([]string, len(tokens))
+	copy(window, tokens)
 
 	for len(result) < maxNumberOfWords {
-		key := first + " " + second
-		nextWord := n(key)
+		key := strings.Join(window, " ")
+		next := chain.NextWord(key)
 
-		if nextWord == "" {
+		if next == "" {
 			return result
 		}
 
-		result = append(result, nextWord)
-
-		first = second
-		second = nextWord
+		result = append(result, next)
+		window = append(window[1:], next)
 	}
 
 	return result
