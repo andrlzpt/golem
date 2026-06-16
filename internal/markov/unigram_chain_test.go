@@ -29,7 +29,7 @@ func TestTrain(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			chain := NewChain()
+			chain := NewUnigramChain()
 			chain.Train(testcase.input)
 			next := chain.Next[testcase.next]
 			if !reflect.DeepEqual(next, testcase.want) {
@@ -56,7 +56,7 @@ func TestNextWord(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			chain := NewChain()
+			chain := NewUnigramChain()
 			chain.Train(testcase.input)
 
 			result := chain.NextWordAlwaysFirstOption(testcase.next)
@@ -67,7 +67,7 @@ func TestNextWord(t *testing.T) {
 	}
 }
 
-func TestNextWordAtRandom(t *testing.T) {
+func TestUnigramNextWordAtRandom(t *testing.T) {
 	testcases := []struct {
 		name  string
 		input []string
@@ -84,7 +84,7 @@ func TestNextWordAtRandom(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			chain := NewChain()
+			chain := NewUnigramChain()
 			chain.Train(testcase.input)
 
 			result := chain.NextWordAtRandom(testcase.next)

@@ -9,13 +9,13 @@ import (
 )
 
 type Narrator struct {
-	chain *markov.Chain
+	chain markov.Chain
 	store *memory.Store
 }
 
-func NewNarrator() *Narrator {
+func NewNarrator(mc markov.Chain) *Narrator {
 	return &Narrator{
-		chain: markov.NewChain(),
+		chain: mc,
 		store: memory.NewStore(),
 	}
 }
@@ -35,8 +35,14 @@ func (n *Narrator) RandomSpeak(input string, maxNumberOfWords int) string {
 	return processTokensIntoString(input, tokens)
 }
 
-func (n *Narrator) FromMemorySpeak(maxNumberOfWords int) string {
+func (n *Narrator) FromUnigramSpeakFromMemory(maxNumberOfWords int) string {
 	input := n.store.Last()
+	tokens := markov.GenerateNextAtRandom(n.chain, input, maxNumberOfWords)
+	return processTokensIntoString(input, tokens)
+}
+
+func (n *Narrator) FromBigramSpeakFromMemory(maxNumberOfWords int) string {
+	input := n.store.LastTwo()
 	tokens := markov.GenerateNextAtRandom(n.chain, input, maxNumberOfWords)
 	return processTokensIntoString(input, tokens)
 }
@@ -48,6 +54,11 @@ func (n *Narrator) Hear(input string) {
 
 func (n *Narrator) TellAll() string {
 	return strings.Join(n.store.View(), " ")
+}
+
+func (n *Narrator) ForgetAll() {
+	n.store.Clear()
+	n.chain.Clear()
 }
 
 func processTokensIntoString(input string, tokens []string) string {
