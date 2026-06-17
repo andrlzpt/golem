@@ -27,7 +27,7 @@ func (n *Narrator) Train(input string) {
 
 func (n *Narrator) Speak(maxNumberOfWords int) string {
 	memory := n.store.View()
-	start := chooseStartTokens(memory, n.chain.Order)
+	start := chooseStartTokens(memory, n.chain)
 	tokens := markov.Generate(n.chain, start, maxNumberOfWords)
 	if len(tokens) == len(start) {
 		return "Não sei nada sobre isso."
@@ -50,9 +50,19 @@ func (n *Narrator) ForgetAll() {
 	n.chain.Clear()
 }
 
-func chooseStartTokens(memory []string, order int) []string {
+func chooseStartTokens(memory []string, chain *markov.Chain) []string {
+	order := chain.Order
 	if order <= 0 || len(memory) < order {
 		return []string{}
 	}
-	return memory[len(memory)-order:]
+
+	for i := len(memory) - order; i >= 0; i-- {
+		candidate := memory[i : i+order]
+		key := strings.Join(candidate, " ")
+		if chain.HasNext(key) {
+			return candidate
+		}
+	}
+
+	return []string{}
 }
