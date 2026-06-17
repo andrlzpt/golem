@@ -17,9 +17,9 @@ func TestSpeak(t *testing.T) {
 		{
 			name:             "deve gerar a frase correta",
 			input:            "O rei foi embora!",
-			start:            "o",
+			start:            "rei",
 			maxNumberOfWords: 3,
-			want:             "o rei foi",
+			want:             "rei foi embora",
 		},
 		{
 			name:             "deve gerar frase vazia e cair no fallback",
