@@ -7,6 +7,29 @@ import (
 
 const EndToken = "<END>"
 
+func SplitSentences(tokens []string) [][]string {
+	var sentences [][]string
+	var current []string
+
+	for _, token := range tokens {
+		if token == EndToken {
+			if len(current) > 0 {
+				sentences = append(sentences, current)
+				current = nil
+			}
+			continue
+		}
+
+		current = append(current, token)
+	}
+
+	if len(current) > 0 {
+		sentences = append(sentences, current)
+	}
+
+	return sentences
+}
+
 func TokenizeTrainingText(input string) []string {
 	lower := strings.ToLower(input)
 	clear := clean(lower, true)

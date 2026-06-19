@@ -71,29 +71,6 @@ func loadTrainingText(fileName string) string {
 
 func extractQuote(source string, chain *markov.Chain) {
 	tokens := text.TokenizeTrainingText(source)
-	sentences := splitSentences(tokens)
+	sentences := text.SplitSentences(tokens)
 
-}
-
-func splitSentences(tokens []string) [][]string {
-	var sentences [][]string
-	var current []string
-
-	for _, token := range tokens {
-		if token == text.EndToken {
-			if len(current) > 0 {
-				sentences = append(sentences, current)
-				current = nil
-			}
-			continue
-		}
-
-		current = append(current, token)
-	}
-
-	if len(current) > 0 {
-		sentences = append(sentences, current)
-	}
-
-	return sentences
 }
