@@ -2,7 +2,10 @@ package markov
 
 import (
 	"math/rand"
+	"slices"
 	"strings"
+
+	"github.com/andrlzpt/golem/internal/text"
 )
 
 type Chain struct {
@@ -33,14 +36,20 @@ func (c *Chain) Train(tokens []string) {
 	}
 }
 
-func (c *Chain) NextWord(word string) string {
-	options := c.Next[word]
+func (c *Chain) NextWord(key string) string {
+	options := c.Next[key]
 
 	if len(options) == 0 {
 		return ""
 	}
 
 	return options[rand.Intn(len(options))]
+}
+
+func (c *Chain) CanContinue(key string) bool {
+	return slices.ContainsFunc(c.Next[key], func(n string) bool {
+		return n != text.EndToken
+	})
 }
 
 func (c *Chain) Clear() {

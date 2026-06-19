@@ -21,7 +21,7 @@ func NewNarrator(mc *markov.Chain) *Narrator {
 }
 
 func (n *Narrator) Train(input string) {
-	tokens := text.Tokenize(input)
+	tokens := text.TokenizeTrainingText(input)
 	n.chain.Train(tokens)
 }
 

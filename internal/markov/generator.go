@@ -1,6 +1,10 @@
 package markov
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/andrlzpt/golem/internal/text"
+)
 
 func Generate(chain *Chain, tokens []string, maxNumberOfWords int) []string {
 	if len(tokens) != chain.Order {
@@ -16,7 +20,7 @@ func Generate(chain *Chain, tokens []string, maxNumberOfWords int) []string {
 		key := strings.Join(window, " ")
 		next := chain.NextWord(key)
 
-		if next == "" {
+		if next == "" || next == text.EndToken {
 			return result
 		}
 
