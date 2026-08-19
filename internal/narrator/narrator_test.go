@@ -17,31 +17,32 @@ func TestSpeak(t *testing.T) {
 		{
 			name:             "deve gerar a frase correta",
 			input:            "O rei foi embora!",
-			start:            "o",
+			start:            "rei",
 			maxNumberOfWords: 3,
-			want:             "o rei foi",
+			want:             "rei foi embora",
 		},
 		{
-			name:             "deve gerar frase vazia",
+			name:             "deve gerar frase vazia e cair no fallback",
 			input:            "O rei foi embora!",
 			start:            "",
 			maxNumberOfWords: 3,
-			want:             "",
+			want:             "Não sei nada sobre isso.",
 		},
 		{
-			name:             "deve gerar frase vazia com palavra que não existe",
+			name:             "deve gerar frase vazia com palavra que não existe e cair no fallback",
 			input:            "O rei foi embora!",
 			start:            "batatinha",
 			maxNumberOfWords: 3,
-			want:             "",
+			want:             "Não sei nada sobre isso.",
 		},
 	}
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			narrator := NewNarrator(markov.NewUnigramChain())
+			narrator := NewNarrator(markov.NewChain(1))
 			narrator.Train(testcase.input)
-			result := narrator.DumbSpeak(testcase.start, testcase.maxNumberOfWords)
+			narrator.Hear(testcase.start)
+			result := narrator.Speak(testcase.maxNumberOfWords)
 
 			if result != testcase.want {
 				t.Fatalf("Speak(%v, %d) result = %#v, want = %#v", testcase.start, testcase.maxNumberOfWords, result, testcase.want)
@@ -66,7 +67,7 @@ func TestTellAll(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			narrator := NewNarrator(markov.NewUnigramChain())
+			narrator := NewNarrator(markov.NewChain(1))
 			narrator.Hear(testcase.input)
 			result := narrator.TellAll()
 
@@ -94,10 +95,10 @@ func TestFromMemorySpeak(t *testing.T) {
 
 	for _, testcase := range testcases {
 		t.Run(testcase.name, func(t *testing.T) {
-			narrator := NewNarrator(markov.NewUnigramChain())
+			narrator := NewNarrator(markov.NewChain(1))
 			narrator.Train(testcase.trainingText)
 			narrator.Hear(testcase.input)
-			result := narrator.FromUnigramSpeakFromMemory(4)
+			result := narrator.Speak(4)
 			if result != testcase.want {
 				t.Fatalf("FromMemorySpeak(4) result = %#v, want = %#v", result, testcase.want)
 			}

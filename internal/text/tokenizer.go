@@ -5,18 +5,55 @@ import (
 	"unicode"
 )
 
-func Tokenize(input string) []string {
+const EndToken = "<END>"
+
+func SplitSentences(tokens []string) [][]string {
+	var sentences [][]string
+	var current []string
+
+	for _, token := range tokens {
+		if token == EndToken {
+			if len(current) > 0 {
+				sentences = append(sentences, current)
+				current = nil
+			}
+			continue
+		}
+
+		current = append(current, token)
+	}
+
+	if len(current) > 0 {
+		sentences = append(sentences, current)
+	}
+
+	return sentences
+}
+
+func TokenizeTrainingText(input string) []string {
 	lower := strings.ToLower(input)
-	clear := keepAllLettersAndSpaces(lower)
+	clear := clean(lower, true)
 	tokens := strings.Fields(clear)
-	return filter(tokens)
+	return filter(tokens, true)
 
 }
 
-func keepAllLettersAndSpaces(input string) string {
+func Tokenize(input string) []string {
+	lower := strings.ToLower(input)
+	clear := clean(lower, false)
+	tokens := strings.Fields(clear)
+	return filter(tokens, false)
+
+}
+
+func clean(input string, addBoundaryMarker bool) string {
 	var result []rune
 
 	for _, r := range input {
+		if addBoundaryMarker && RuneIsSentenceEnding(r) {
+			result = append(result, []rune(" "+EndToken+" ")...)
+			continue
+		}
 		if unicode.IsLetter(r) || unicode.IsSpace(r) || r == '-' {
 			result = append(result, r)
 		}
@@ -25,12 +62,12 @@ func keepAllLettersAndSpaces(input string) string {
 	return string(result)
 }
 
-func filter(tokens []string) []string {
+func filter(tokens []string, keepEndToken bool) []string {
 	var filtered []string
 	for _, t := range tokens {
 		hasLetter := strings.ContainsFunc(t, func(r rune) bool {
 			return unicode.IsLetter(r)
-		})
+		}) || (keepEndToken && t == EndToken)
 
 		if !hasLetter {
 			continue

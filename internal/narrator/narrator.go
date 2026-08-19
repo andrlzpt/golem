@@ -9,11 +9,11 @@ import (
 )
 
 type Narrator struct {
-	chain markov.Chain
+	chain *markov.Chain
 	store *memory.Store
 }
 
-func NewNarrator(mc markov.Chain) *Narrator {
+func NewNarrator(mc *markov.Chain) *Narrator {
 	return &Narrator{
 		chain: mc,
 		store: memory.NewStore(),
@@ -21,30 +21,19 @@ func NewNarrator(mc markov.Chain) *Narrator {
 }
 
 func (n *Narrator) Train(input string) {
-	tokens := text.Tokenize(input)
+	tokens := text.TokenizeTrainingText(input)
 	n.chain.Train(tokens)
 }
 
-func (n *Narrator) DumbSpeak(input string, maxNumberOfWords int) string {
-	tokens := markov.GenerateNextDumb(n.chain, input, maxNumberOfWords)
-	return processTokensIntoString(input, tokens)
-}
+func (n *Narrator) Speak(maxNumberOfWords int) string {
+	memory := n.store.View()
+	start := chooseStartTokens(memory, n.chain)
+	tokens := markov.Generate(n.chain, start, maxNumberOfWords)
+	if len(tokens) == len(start) {
+		return "Não sei nada sobre isso."
+	}
+	return strings.Join(tokens, " ")
 
-func (n *Narrator) RandomSpeak(input string, maxNumberOfWords int) string {
-	tokens := markov.GenerateNextAtRandom(n.chain, input, maxNumberOfWords)
-	return processTokensIntoString(input, tokens)
-}
-
-func (n *Narrator) FromUnigramSpeakFromMemory(maxNumberOfWords int) string {
-	input := n.store.Last()
-	tokens := markov.GenerateNextAtRandom(n.chain, input, maxNumberOfWords)
-	return processTokensIntoString(input, tokens)
-}
-
-func (n *Narrator) FromBigramSpeakFromMemory(maxNumberOfWords int) string {
-	input := n.store.LastTwo()
-	tokens := markov.GenerateNextAtRandom(n.chain, input, maxNumberOfWords)
-	return processTokensIntoString(input, tokens)
 }
 
 func (n *Narrator) Hear(input string) {
@@ -61,10 +50,19 @@ func (n *Narrator) ForgetAll() {
 	n.chain.Clear()
 }
 
-func processTokensIntoString(input string, tokens []string) string {
-	response := strings.Join(tokens, " ")
-	if response == input {
-		return ""
+func chooseStartTokens(memory []string, chain *markov.Chain) []string {
+	order := chain.Order
+	if order <= 0 || len(memory) < order {
+		return []string{}
 	}
-	return response
+
+	for i := len(memory) - order; i >= 0; i-- {
+		candidate := memory[i : i+order]
+		key := strings.Join(candidate, " ")
+		if text.HasContentWord(candidate) && chain.CanContinue(key) {
+			return candidate
+		}
+	}
+
+	return []string{}
 }
