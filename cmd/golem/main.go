@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
+	"strings"
 
 	"github.com/andrlzpt/golem/internal/markov"
 	"github.com/andrlzpt/golem/internal/narrator"
@@ -15,10 +17,6 @@ var ErrReadingTrainingTextFile = errors.New("reading training text failed")
 
 func main() {
 	zaratustra := loadTrainingText("zaratustra")
-
-	republica := loadTrainingText("republica")
-
-	reader := bufio.NewReader(os.Stdin)
 
 	unigramChain := markov.NewChain(1)
 	unigramNarrator := narrator.NewNarrator(unigramChain)
@@ -36,20 +34,32 @@ func main() {
 	tetragramNarrator := narrator.NewNarrator(tetragramChain)
 	tetragramNarrator.Train(zaratustra)
 
-	input := readInput(reader)
+	republica := loadTrainingText("republica")
 
-	unigramNarrator.Hear(input)
-	bigramNarrator.Hear(input)
-	trigramNarrator.Hear(input)
-	tetragramNarrator.Hear(input)
+	var input string
 
 	fmt.Println("---UNIGRAM CHAIN: --------")
-	fmt.Printf("GOLEM SAYS: %q\n", unigramNarrator.Speak(60))
+	input = extractQuote(republica, unigramChain)
+	fmt.Printf("PLATO      SAYS: %q\n", input)
+	unigramNarrator.Hear(input)
+	fmt.Printf("ZARATUSTRA SAYS: %q\n", unigramNarrator.Speak(60))
+
 	fmt.Println("---BIGRAM CHAIN: --------")
-	fmt.Printf("GOLEM SAYS: %q\n", bigramNarrator.Speak(60))
+	input = extractQuote(republica, bigramChain)
+	fmt.Printf("PLATO      SAYS: %q\n", input)
+	bigramNarrator.Hear(input)
+	fmt.Printf("ZARATUSTRA SAYS: %q\n", bigramNarrator.Speak(60))
+
 	fmt.Println("---TRIGRAM CHAIN: --------")
-	fmt.Printf("GOLEM SAYS: %q\n", trigramNarrator.Speak(60))
+	input = extractQuote(republica, trigramChain)
+	fmt.Printf("PLATO      SAYS: %q\n", input)
+	trigramNarrator.Hear(input)
+	fmt.Printf("ZARATUSTRA SAYS: %q\n", trigramNarrator.Speak(60))
+
 	fmt.Println("---TETRAGRAM CHAIN: --------")
+	input = extractQuote(republica, tetragramChain)
+	fmt.Printf("PLATO      SAYS: %q\n", input)
+	tetragramNarrator.Hear(input)
 	fmt.Printf("GOLEM SAYS: %q\n", tetragramNarrator.Speak(60))
 }
 
@@ -69,8 +79,12 @@ func loadTrainingText(fileName string) string {
 	return string(data)
 }
 
-func extractQuote(source string, chain *markov.Chain) {
+func extractQuote(source string, chain *markov.Chain) string {
 	tokens := text.TokenizeTrainingText(source)
 	sentences := text.SplitSentences(tokens)
+	scored := text.ScoreSentences(sentences, chain.Order, chain.CanContinue)
+	top := 40
+	bestTen := scored[:top]
+	return strings.Join(bestTen[rand.Intn(top)].Tokens, " ")
 
 }
